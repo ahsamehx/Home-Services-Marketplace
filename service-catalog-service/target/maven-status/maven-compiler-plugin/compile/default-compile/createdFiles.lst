@@ -1,0 +1,7 @@
+com\homeservices\catalog\CatalogApplication.class
+com\homeservices\catalog\controller\CatalogController.class
+com\homeservices\catalog\entity\ServiceCategory.class
+com\homeservices\catalog\entity\ServiceOffer.class
+com\homeservices\catalog\repository\CategoryRepository.class
+com\homeservices\catalog\repository\OfferRepository.class
+com\homeservices\catalog\service\CatalogService.class

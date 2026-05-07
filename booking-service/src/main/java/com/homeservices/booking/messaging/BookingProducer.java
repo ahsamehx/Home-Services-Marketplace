@@ -1,0 +1,72 @@
+package com.homeservices.booking.messaging;
+
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import com.homeservices.booking.entity.Booking;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+@Component
+public class BookingProducer {
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    public void publishBookingCreated(Booking booking) {
+        try {
+            String message = objectMapper.writeValueAsString(booking);
+            rabbitTemplate.convertAndSend(
+                    "booking.exchange",
+                    "booking.created",
+                    message
+            );
+            System.out.println("Published booking.created: " + booking.getId());
+        } catch (Exception e) {
+            System.err.println("Error publishing booking.created: " + e.getMessage());
+        }
+    }
+
+    public void publishBookingConfirmed(Booking booking) {
+        try {
+            String message = objectMapper.writeValueAsString(booking);
+            rabbitTemplate.convertAndSend(
+                    "booking.exchange",
+                    "booking.confirmed",
+                    message
+            );
+            System.out.println("Published booking.confirmed: " + booking.getId());
+        } catch (Exception e) {
+            System.err.println("Error publishing booking.confirmed: " + e.getMessage());
+        }
+    }
+
+    public void publishBookingRejected(Booking booking) {
+        try {
+            String message = objectMapper.writeValueAsString(booking);
+            rabbitTemplate.convertAndSend(
+                    "booking.exchange",
+                    "booking.rejected",
+                    message
+            );
+            System.out.println("Published booking.rejected: " + booking.getId());
+        } catch (Exception e) {
+            System.err.println("Error publishing booking.rejected: " + e.getMessage());
+        }
+    }
+
+    public void publishPaymentFailed(Booking booking) {
+        try {
+            String message = objectMapper.writeValueAsString(booking);
+            rabbitTemplate.convertAndSend(
+                    "payment.exchange",
+                    "payment.failed",
+                    message
+            );
+            System.out.println("Published payment.failed: " + booking.getId());
+        } catch (Exception e) {
+            System.err.println("Error publishing payment.failed: " + e.getMessage());
+        }
+    }
+}

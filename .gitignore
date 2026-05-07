@@ -1,0 +1,36 @@
+# Maven
+/target/
+
+# Eclipse/IntelliJ
+*.iml
+.idea/
+*.ipr
+*.iws
+.project
+.classpath
+.settings/
+
+# VS Code
+.vscode/
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Maven wrapper
+.mvn/wrapper/maven-wrapper.jar
+
+# Node (if any)
+node_modules/
+
+# Ignore local env files
+.env
+
+# Spring Boot Devtools
+spring-boot-devtools.properties
+
+# Others
+*.tmp
