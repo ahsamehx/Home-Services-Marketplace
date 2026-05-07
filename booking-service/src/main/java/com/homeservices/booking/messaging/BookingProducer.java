@@ -12,7 +12,8 @@ public class BookingProducer {
     @Autowired
     private RabbitTemplate rabbitTemplate;
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    @Autowired
+    private ObjectMapper objectMapper;
 
     public void publishBookingCreated(Booking booking) {
         try {

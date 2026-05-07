@@ -1,0 +1,957 @@
+{
+  "info": {
+    "name": "Home Services Marketplace",
+    "description": "Complete API collection for testing the microservices marketplace with RabbitMQ notifications",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "User Service (8080)",
+      "item": [
+        {
+          "name": "Register Customer",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"customer1\",\n  \"password\": \"pass123\",\n  \"userType\": \"CUSTOMER\",\n  \"profession\": null\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/users/register",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "users", "register"]
+            }
+          }
+        },
+        {
+          "name": "Register Service Provider",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"provider1\",\n  \"password\": \"pass123\",\n  \"userType\": \"SERVICE_PROVIDER\",\n  \"profession\": \"Electrician\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/users/register",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "users", "register"]
+            }
+          }
+        },
+        {
+          "name": "Login User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"customer1\",\n  \"password\": \"pass123\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/users/login",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "users", "login"]
+            }
+          }
+        },
+        {
+          "name": "Get User By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/users/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "users", "1"]
+            }
+          }
+        },
+        {
+          "name": "Get Users By Type",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/users/type/CUSTOMER",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "users", "type", "CUSTOMER"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Wallet Service (8080)",
+      "item": [
+        {
+          "name": "Add Funds",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": 1,\n  \"amount\": 500.00\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/wallet/add-funds",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "wallet", "add-funds"]
+            }
+          }
+        },
+        {
+          "name": "Get Wallet Balance",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/wallet/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "wallet", "1"]
+            }
+          }
+        },
+        {
+          "name": "Validate Balance",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": 1,\n  \"amount\": 150.00\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/wallet/validate",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "wallet", "validate"]
+            }
+          }
+        },
+        {
+          "name": "Hold Amount",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": 1,\n  \"amount\": 150.00,\n  \"bookingId\": 1\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/wallet/hold",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "wallet", "hold"]
+            }
+          }
+        },
+        {
+          "name": "Confirm Deduction",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/wallet/confirm",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "wallet", "confirm"]
+            }
+          }
+        },
+        {
+          "name": "Rollback Deduction",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/wallet/rollback",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "wallet", "rollback"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Catalog Service (8081)",
+      "item": [
+        {
+          "name": "Create Category",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"categoryName\": \"Electrical Services\",\n  \"description\": \"Professional electrical work\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8081/api/categories",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8081",
+              "path": ["api", "categories"]
+            }
+          }
+        },
+        {
+          "name": "Get All Categories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8081/api/categories",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8081",
+              "path": ["api", "categories"]
+            }
+          }
+        },
+        {
+          "name": "Get Category By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8081/api/categories/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8081",
+              "path": ["api", "categories", "1"]
+            }
+          }
+        },
+        {
+          "name": "Create Service Offer",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"serviceProviderId\": 2,\n  \"categoryId\": 1,\n  \"price\": 150.00,\n  \"availableDate\": \"2026-06-15\",\n  \"description\": \"House electrical wiring - 4 hours\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8081/api/offers",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8081",
+              "path": ["api", "offers"]
+            }
+          }
+        },
+        {
+          "name": "Get All Active Offers",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8081/api/offers",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8081",
+              "path": ["api", "offers"]
+            }
+          }
+        },
+        {
+          "name": "Get Offer By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8081/api/offers/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8081",
+              "path": ["api", "offers", "1"]
+            }
+          }
+        },
+        {
+          "name": "Get Offers By Category",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8081/api/offers/category/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8081",
+              "path": ["api", "offers", "category", "1"]
+            }
+          }
+        },
+        {
+          "name": "Get Offers By Provider",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8081/api/offers/provider/2",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8081",
+              "path": ["api", "offers", "provider", "2"]
+            }
+          }
+        },
+        {
+          "name": "Update Offer",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"price\": 180.00,\n  \"availableDate\": \"2026-06-20\",\n  \"description\": \"House electrical wiring - 5 hours\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8081/api/offers/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8081",
+              "path": ["api", "offers", "1"]
+            }
+          }
+        },
+        {
+          "name": "Deactivate Offer",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8081/api/offers/1/deactivate",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8081",
+              "path": ["api", "offers", "1", "deactivate"]
+            }
+          }
+        },
+        {
+          "name": "Activate Offer",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8081/api/offers/1/activate",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8081",
+              "path": ["api", "offers", "1", "activate"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Booking Service (8082)",
+      "item": [
+        {
+          "name": "Create Booking (Publishes booking.created)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": 1,\n  \"offerId\": 1,\n  \"serviceProviderId\": 2,\n  \"price\": 150.00,\n  \"serviceDate\": \"2026-06-15\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8082/api/bookings",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8082",
+              "path": ["api", "bookings"]
+            }
+          }
+        },
+        {
+          "name": "Get Booking By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8082/api/bookings/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8082",
+              "path": ["api", "bookings", "1"]
+            }
+          }
+        },
+        {
+          "name": "Get Customer Bookings",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8082/api/bookings/customer/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8082",
+              "path": ["api", "bookings", "customer", "1"]
+            }
+          }
+        },
+        {
+          "name": "Get Provider Bookings",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8082/api/bookings/provider/2",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8082",
+              "path": ["api", "bookings", "provider", "2"]
+            }
+          }
+        },
+        {
+          "name": "Get All Bookings",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8082/api/bookings/history/all",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8082",
+              "path": ["api", "bookings", "history", "all"]
+            }
+          }
+        },
+        {
+          "name": "Get Booking History",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8082/api/bookings/1/history",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8082",
+              "path": ["api", "bookings", "1", "history"]
+            }
+          }
+        },
+        {
+          "name": "Confirm Booking (Publishes booking.confirmed + creates notifications)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": {
+              "raw": "http://localhost:8082/api/bookings/1/confirm",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8082",
+              "path": ["api", "bookings", "1", "confirm"]
+            }
+          }
+        },
+        {
+          "name": "Reject Booking (Publishes booking.rejected + creates notification)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": {
+              "raw": "http://localhost:8082/api/bookings/1/reject",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8082",
+              "path": ["api", "bookings", "1", "reject"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Notification Service (8083)",
+      "item": [
+        {
+          "name": "Get User Notifications",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8083/api/notifications/user/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8083",
+              "path": ["api", "notifications", "user", "1"]
+            }
+          }
+        },
+        {
+          "name": "Get User Unread Notifications",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8083/api/notifications/user/1/unread",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8083",
+              "path": ["api", "notifications", "user", "1", "unread"]
+            }
+          }
+        },
+        {
+          "name": "Get Notifications By User Type",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8083/api/notifications/type/CUSTOMER",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8083",
+              "path": ["api", "notifications", "type", "CUSTOMER"]
+            }
+          }
+        },
+        {
+          "name": "Get Unread Notifications By User Type",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8083/api/notifications/type/CUSTOMER/unread",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8083",
+              "path": ["api", "notifications", "type", "CUSTOMER", "unread"]
+            }
+          }
+        },
+        {
+          "name": "Get Notifications By Booking",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8083/api/notifications/booking/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8083",
+              "path": ["api", "notifications", "booking", "1"]
+            }
+          }
+        },
+        {
+          "name": "Get Notification By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8083/api/notifications/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8083",
+              "path": ["api", "notifications", "1"]
+            }
+          }
+        },
+        {
+          "name": "Mark Notification as Read",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": {
+              "raw": "http://localhost:8083/api/notifications/1/read",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8083",
+              "path": ["api", "notifications", "1", "read"]
+            }
+          }
+        },
+        {
+          "name": "Mark All Notifications as Read",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": {
+              "raw": "http://localhost:8083/api/notifications/user/1/read-all",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8083",
+              "path": ["api", "notifications", "user", "1", "read-all"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Testing Workflows",
+      "item": [
+        {
+          "name": "1️⃣ WORKFLOW: Register Users",
+          "item": [
+            {
+              "name": "Register Customer",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"username\": \"customer1\",\n  \"password\": \"pass123\",\n  \"userType\": \"CUSTOMER\",\n  \"profession\": null\n}"
+                },
+                "url": {
+                  "raw": "http://localhost:8080/api/users/register",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "8080",
+                  "path": ["api", "users", "register"]
+                }
+              }
+            },
+            {
+              "name": "Register Provider",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"username\": \"provider1\",\n  \"password\": \"pass123\",\n  \"userType\": \"SERVICE_PROVIDER\",\n  \"profession\": \"Electrician\"\n}"
+                },
+                "url": {
+                  "raw": "http://localhost:8080/api/users/register",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "8080",
+                  "path": ["api", "users", "register"]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "2️⃣ WORKFLOW: Setup Catalog",
+          "item": [
+            {
+              "name": "Create Category",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"categoryName\": \"Electrical Services\",\n  \"description\": \"Professional electrical work\"\n}"
+                },
+                "url": {
+                  "raw": "http://localhost:8081/api/categories",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "8081",
+                  "path": ["api", "categories"]
+                }
+              }
+            },
+            {
+              "name": "Create Offer",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"serviceProviderId\": 2,\n  \"categoryId\": 1,\n  \"price\": 150.00,\n  \"availableDate\": \"2026-06-15\",\n  \"description\": \"House electrical wiring - 4 hours\"\n}"
+                },
+                "url": {
+                  "raw": "http://localhost:8081/api/offers",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "8081",
+                  "path": ["api", "offers"]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "3️⃣ WORKFLOW: Add Wallet Funds",
+          "item": [
+            {
+              "name": "Add Funds to Customer",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"userId\": 1,\n  \"amount\": 500.00\n}"
+                },
+                "url": {
+                  "raw": "http://localhost:8080/api/wallet/add-funds",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "8080",
+                  "path": ["api", "wallet", "add-funds"]
+                }
+              }
+            },
+            {
+              "name": "Check Wallet Balance",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8080/api/wallet/1",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "8080",
+                  "path": ["api", "wallet", "1"]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "4️⃣ WORKFLOW: Create & Confirm Booking (Tests RabbitMQ)",
+          "item": [
+            {
+              "name": "Create Booking (Publishes booking.created)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"customerId\": 1,\n  \"offerId\": 1,\n  \"serviceProviderId\": 2,\n  \"price\": 150.00,\n  \"serviceDate\": \"2026-06-15\"\n}"
+                },
+                "url": {
+                  "raw": "http://localhost:8082/api/bookings",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "8082",
+                  "path": ["api", "bookings"]
+                }
+              }
+            },
+            {
+              "name": "Confirm Booking (Publishes booking.confirmed)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}"
+                },
+                "url": {
+                  "raw": "http://localhost:8082/api/bookings/1/confirm",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "8082",
+                  "path": ["api", "bookings", "1", "confirm"]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "5️⃣ WORKFLOW: Verify Notifications Created",
+          "item": [
+            {
+              "name": "Get Customer Notifications",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8083/api/notifications/user/1",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "8083",
+                  "path": ["api", "notifications", "user", "1"]
+                }
+              }
+            },
+            {
+              "name": "Get Provider Notifications",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8083/api/notifications/user/2",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "8083",
+                  "path": ["api", "notifications", "user", "2"]
+                }
+              }
+            },
+            {
+              "name": "Get Unread Notifications",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8083/api/notifications/user/1/unread",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "8083",
+                  "path": ["api", "notifications", "user", "1", "unread"]
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
