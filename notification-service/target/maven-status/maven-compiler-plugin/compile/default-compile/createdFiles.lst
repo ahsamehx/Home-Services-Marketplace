@@ -1,7 +1,0 @@
-com\homeservices\notification\NotificationApplication.class
-com\homeservices\notification\entity\Notification.class
-com\homeservices\notification\config\RabbitMQConfig.class
-com\homeservices\notification\controller\NotificationController.class
-com\homeservices\notification\service\NotificationService.class
-com\homeservices\notification\repository\NotificationRepository.class
-com\homeservices\notification\messaging\NotificationListener.class
