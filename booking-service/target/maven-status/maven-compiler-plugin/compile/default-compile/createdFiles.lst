@@ -1,0 +1,11 @@
+com\homeservices\booking\repository\BookingHistoryRepository.class
+com\homeservices\booking\repository\BookingRepository.class
+com\homeservices\booking\entity\Booking.class
+com\homeservices\booking\messaging\BookingListener.class
+com\homeservices\booking\config\RabbitMQConfig.class
+com\homeservices\booking\messaging\BookingProducer.class
+com\homeservices\booking\BookingApplication.class
+com\homeservices\booking\controller\BookingController.class
+com\homeservices\booking\entity\BookingHistory.class
+com\homeservices\booking\service\BookingService.class
+com\homeservices\booking\client\UserServiceClient.class
