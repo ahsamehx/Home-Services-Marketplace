@@ -17,7 +17,6 @@ public class CatalogController {
     @Autowired
     private CatalogService catalogService;
 
-    // Category endpoints
     @PostMapping("/categories")
     public ResponseEntity<?> addCategory(@RequestBody Map<String, String> request) {
         try {
@@ -45,7 +44,6 @@ public class CatalogController {
         }
     }
 
-    // Service offer endpoints
     @PostMapping("/offers")
     public ResponseEntity<?> createOffer(@RequestBody Map<String, Object> request) {
         try {

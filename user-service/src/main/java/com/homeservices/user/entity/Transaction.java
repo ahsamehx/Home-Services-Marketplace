@@ -23,7 +23,7 @@ public class Transaction {
     private Double amount;
 
     @Column(nullable = false)
-    private String transactionType; // BOOKING, REFUND, ADD_FUNDS
+    private String transactionType;
 
     @Column(nullable = false)
     private Long bookingId;
@@ -31,5 +31,5 @@ public class Transaction {
     @Column(nullable = false)
     private LocalDateTime timestamp;
 
-    private String status; // SUCCESS, FAILED
+    private String status;
 }

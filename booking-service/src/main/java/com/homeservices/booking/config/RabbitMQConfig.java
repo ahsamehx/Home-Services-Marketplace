@@ -7,30 +7,25 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMQConfig {
 
-    // Exchanges
     public static final String BOOKING_EXCHANGE = "booking.exchange";
     public static final String PAYMENT_EXCHANGE = "payment.exchange";
     public static final String NOTIFICATION_EXCHANGE = "notification.exchange";
 
-    // Topic Exchange
     @Bean
     public TopicExchange bookingExchange() {
         return new TopicExchange(BOOKING_EXCHANGE, true, false);
     }
 
-    // Direct Exchange
     @Bean
     public DirectExchange paymentExchange() {
         return new DirectExchange(PAYMENT_EXCHANGE, true, false);
     }
 
-    // Fanout Exchange
     @Bean
     public FanoutExchange notificationExchange() {
         return new FanoutExchange(NOTIFICATION_EXCHANGE, true, false);
     }
 
-    // Queues
     @Bean
     public Queue bookingQueue() {
         return new Queue("booking.queue", true);
@@ -56,7 +51,6 @@ public class RabbitMQConfig {
         return new Queue("notification.queue", true);
     }
 
-    // Bindings
     @Bean
     public Binding bookingBinding(Queue bookingQueue, TopicExchange bookingExchange) {
         return BindingBuilder.bind(bookingQueue).to(bookingExchange).with("booking.*");

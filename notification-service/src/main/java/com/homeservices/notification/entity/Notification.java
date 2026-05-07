@@ -20,10 +20,10 @@ public class Notification {
     private Long userId;
 
     @Column(nullable = false)
-    private String userType; // CUSTOMER, SERVICE_PROVIDER, ADMIN
+    private String userType;
 
     @Column(nullable = false)
-    private String notificationType; // BOOKING_CONFIRMED, BOOKING_REJECTED, PAYMENT_FAILED
+    private String notificationType;
 
     @Column(nullable = false, columnDefinition = "TEXT")
     private String message;

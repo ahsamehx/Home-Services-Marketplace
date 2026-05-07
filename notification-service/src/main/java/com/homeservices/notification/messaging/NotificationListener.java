@@ -26,15 +26,13 @@ public class NotificationListener {
             Long bookingId = ((Number) booking.get("id")).longValue();
             Double price = ((Number) booking.get("price")).doubleValue();
 
-            // Notifies customer
             String customerMsg = "Your booking (ID: " + bookingId + ") has been confirmed. Amount: $" + price;
             notificationService.createNotification(customerId, "CUSTOMER", "BOOKING_CONFIRMED", customerMsg, bookingId);
 
-            // Notifies service provider
             String providerMsg = "Booking (ID: " + bookingId + ") has been confirmed. Amount: $" + price;
             notificationService.createNotification(serviceProviderId, "SERVICE_PROVIDER", "BOOKING_CONFIRMED", providerMsg, bookingId);
 
-            System.out.println("✓ Booking confirmed notifications sent for booking: " + bookingId);
+            System.out.println("Booking confirmed notifications sent for booking: " + bookingId);
         } catch (Exception e) {
             System.err.println("Error handling booking.confirmed: " + e.getMessage());
         }
@@ -49,15 +47,13 @@ public class NotificationListener {
             Long bookingId = ((Number) booking.get("id")).longValue();
             Double price = ((Number) booking.get("price")).doubleValue();
 
-            // Notify customer
             String customerMsg = "Your booking (ID: " + bookingId + ") was rejected. Refund amount: $" + price;
             notificationService.createNotification(customerId, "CUSTOMER", "BOOKING_REJECTED", customerMsg, bookingId);
 
-            // Notify service provider
             String providerMsg = "You rejected booking (ID: " + bookingId + "). Refund amount to customer: $" + price;
             notificationService.createNotification(serviceProviderId, "SERVICE_PROVIDER", "BOOKING_REJECTED", providerMsg, bookingId);
 
-            System.out.println("✓ Booking rejected notifications sent for booking: " + bookingId);
+            System.out.println("Booking rejected notifications sent for booking: " + bookingId);
         } catch (Exception e) {
             System.err.println("Error handling booking.rejected: " + e.getMessage());
         }
@@ -70,11 +66,10 @@ public class NotificationListener {
             Long bookingId = ((Number) booking.get("id")).longValue();
             Double price = ((Number) booking.get("price")).doubleValue();
 
-            // Notify admin (userId = -1 for admin, or use admin userId if available)
             String msg = "Payment failed for booking (ID: " + bookingId + "). Amount: $" + price + ". Manual review may be required.";
             notificationService.createNotification(-1L, "ADMIN", "PAYMENT_FAILED", msg, bookingId);
 
-            System.out.println("✓ Payment failed notification sent to admin for booking: " + bookingId);
+            System.out.println("Payment failed notification sent to admin for booking: " + bookingId);
         } catch (Exception e) {
             System.err.println("Error handling payment.failed: " + e.getMessage());
         }

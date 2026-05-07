@@ -19,7 +19,6 @@ public class CatalogService {
     @Autowired
     private OfferRepository offerRepository;
 
-    // Category operations
     public ServiceCategory addCategory(String categoryName, String description) throws Exception {
         if (categoryRepository.findByCategoryName(categoryName) != null) {
             throw new Exception("Category already exists");
@@ -42,10 +41,8 @@ public class CatalogService {
                 .orElseThrow(() -> new Exception("Category not found"));
     }
 
-    // Service offer operations
     public ServiceOffer createOffer(Long serviceProviderId, Long categoryId, Double price, 
                                     LocalDate availableDate, String description) throws Exception {
-        // Verify category exists
         getCategoryById(categoryId);
 
         ServiceOffer offer = new ServiceOffer();

@@ -36,7 +36,7 @@ public class Booking {
     private Double price;
 
     @Column(nullable = false)
-    private String status; // PENDING, CONFIRMED, REJECTED, COMPLETED
+    private String status;
 
     @Column(nullable = false)
     private LocalDateTime createdDate = LocalDateTime.now();

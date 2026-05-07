@@ -22,9 +22,9 @@ public class User {
     private String password;
 
     @Column(nullable = false)
-    private String userType; // CUSTOMER, SERVICE_PROVIDER, ADMIN
+    private String userType;
 
-    private String profession; // For service providers
+    private String profession;
 
     @Column(nullable = false)
     private Double walletBalance = 0.0;

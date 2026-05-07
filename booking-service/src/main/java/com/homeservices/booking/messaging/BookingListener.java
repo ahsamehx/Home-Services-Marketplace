@@ -13,7 +13,6 @@ public class BookingListener {
     public void handleBookingConfirmed(String message) {
         try {
             System.out.println("Received booking.confirmed: " + message);
-            // Handle confirmed booking notification
         } catch (Exception e) {
             System.err.println("Error handling booking.confirmed: " + e.getMessage());
         }
@@ -23,7 +22,6 @@ public class BookingListener {
     public void handleBookingRejected(String message) {
         try {
             System.out.println("Received booking.rejected: " + message);
-            // Handle rejected booking notification
         } catch (Exception e) {
             System.err.println("Error handling booking.rejected: " + e.getMessage());
         }
@@ -33,7 +31,6 @@ public class BookingListener {
     public void handlePaymentFailed(String message) {
         try {
             System.out.println("Received payment.failed: " + message);
-            // Notify admin of payment failure
         } catch (Exception e) {
             System.err.println("Error handling payment.failed: " + e.getMessage());
         }

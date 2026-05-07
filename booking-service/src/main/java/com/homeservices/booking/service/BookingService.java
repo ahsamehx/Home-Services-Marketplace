@@ -28,17 +28,14 @@ public class BookingService {
 
     public Booking createBooking(Long customerId, Long offerId, Long serviceProviderId, 
                                   Double price, java.time.LocalDate serviceDate) throws Exception {
-        // Validate wallet balance
         if (!userServiceClient.validateBalance(customerId, price)) {
             throw new Exception("Insufficient wallet balance");
         }
 
-        // Hold amount in wallet
         if (!userServiceClient.holdAmount(customerId, price, offerId)) {
             throw new Exception("Failed to hold amount in wallet");
         }
 
-        // Create booking
         Booking booking = new Booking();
         booking.setCustomerId(customerId);
         booking.setOfferId(offerId);
@@ -51,10 +48,8 @@ public class BookingService {
 
         Booking savedBooking = bookingRepository.save(booking);
 
-        // Record in history
         recordHistory(savedBooking.getId(), "PENDING");
 
-        // Publish event
         bookingProducer.publishBookingCreated(savedBooking);
 
         return savedBooking;
@@ -67,18 +62,14 @@ public class BookingService {
             throw new Exception("Booking is not in PENDING status");
         }
 
-        // Confirm deduction in wallet
         userServiceClient.confirmDeduction(booking.getCustomerId());
 
-        // Update booking status
         booking.setStatus("CONFIRMED");
         booking.setUpdatedDate(LocalDateTime.now());
         Booking updatedBooking = bookingRepository.save(booking);
 
-        // Record in history
         recordHistory(bookingId, "CONFIRMED");
 
-        // Publish event
         bookingProducer.publishBookingConfirmed(updatedBooking);
 
         return updatedBooking;
@@ -91,18 +82,14 @@ public class BookingService {
             throw new Exception("Booking is not in PENDING status");
         }
 
-        // Rollback wallet
         userServiceClient.rollbackDeduction(booking.getCustomerId());
 
-        // Update booking status
         booking.setStatus("REJECTED");
         booking.setUpdatedDate(LocalDateTime.now());
         Booking updatedBooking = bookingRepository.save(booking);
 
-        // Record in history
         recordHistory(bookingId, "REJECTED");
 
-        // Publish event
         bookingProducer.publishBookingRejected(updatedBooking);
         bookingProducer.publishPaymentFailed(updatedBooking);
 
