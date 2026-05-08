@@ -61,6 +61,11 @@ public class RabbitMQConfig {
         return new Queue("request.accepted", true);
     }
 
+    @Bean
+    public Queue insufficientFundsQueue() {
+        return new Queue("booking.insufficient_funds", true);
+    }
+
     // @Bean
     // public Queue notificationQueue() {
     //     return new Queue("notification.queue", true);
@@ -94,6 +99,11 @@ public class RabbitMQConfig {
     @Bean
     public Binding requestAcceptedBinding(Queue requestAcceptedQueue, TopicExchange requestExchange) {
         return BindingBuilder.bind(requestAcceptedQueue).to(requestExchange).with("request.accepted");
+    }
+
+    @Bean
+    public Binding insufficientFundsBinding(Queue insufficientFundsQueue, TopicExchange bookingExchange) {
+        return BindingBuilder.bind(insufficientFundsQueue).to(bookingExchange).with("booking.insufficient_funds");
     }
 
     // @Bean

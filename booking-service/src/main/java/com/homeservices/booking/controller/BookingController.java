@@ -25,12 +25,11 @@ public class BookingController {
         try {
             Long customerId = ((Number) request.get("customerId")).longValue();
             Long offerId = ((Number) request.get("offerId")).longValue();
-            Long serviceProviderId = ((Number) request.get("serviceProviderId")).longValue();
-            Double price = ((Number) request.get("price")).doubleValue();
-            LocalDate serviceDate = LocalDate.parse((String) request.get("serviceDate"));
+                Long serviceProviderId = ((Number) request.get("serviceProviderId")).longValue();
+                LocalDate serviceDate = LocalDate.parse((String) request.get("serviceDate"));
 
-            Booking booking = bookingService.createBooking(customerId, offerId, 
-                    serviceProviderId, price, serviceDate);
+                Booking booking = bookingService.createBooking(customerId, offerId,
+                    serviceProviderId, serviceDate);
             return ResponseEntity.ok(booking);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
