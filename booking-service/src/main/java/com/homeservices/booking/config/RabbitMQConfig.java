@@ -9,7 +9,7 @@ public class RabbitMQConfig {
 
     public static final String BOOKING_EXCHANGE = "booking.exchange";
     public static final String PAYMENT_EXCHANGE = "payment.exchange";
-    public static final String NOTIFICATION_EXCHANGE = "notification.exchange";
+    public static final String REQUEST_EXCHANGE = "request.exchange";
 
     @Bean
     public TopicExchange bookingExchange() {
@@ -22,9 +22,14 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    public FanoutExchange notificationExchange() {
-        return new FanoutExchange(NOTIFICATION_EXCHANGE, true, false);
+    public TopicExchange requestExchange() {
+        return new TopicExchange(REQUEST_EXCHANGE, true, false);
     }
+
+    // @Bean
+    // public FanoutExchange notificationExchange() {
+    //     return new FanoutExchange(NOTIFICATION_EXCHANGE, true, false);
+    // }
 
     @Bean
     public Queue bookingQueue() {
@@ -47,9 +52,19 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    public Queue notificationQueue() {
-        return new Queue("notification.queue", true);
+    public Queue requestCreatedQueue() {
+        return new Queue("request.created", true);
     }
+
+    @Bean
+    public Queue requestAcceptedQueue() {
+        return new Queue("request.accepted", true);
+    }
+
+    // @Bean
+    // public Queue notificationQueue() {
+    //     return new Queue("notification.queue", true);
+    // }
 
     @Bean
     public Binding bookingBinding(Queue bookingQueue, TopicExchange bookingExchange) {
@@ -72,7 +87,17 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    public Binding notificationBinding(Queue notificationQueue, FanoutExchange notificationExchange) {
-        return BindingBuilder.bind(notificationQueue).to(notificationExchange);
+    public Binding requestCreatedBinding(Queue requestCreatedQueue, TopicExchange requestExchange) {
+        return BindingBuilder.bind(requestCreatedQueue).to(requestExchange).with("request.created");
     }
+
+    @Bean
+    public Binding requestAcceptedBinding(Queue requestAcceptedQueue, TopicExchange requestExchange) {
+        return BindingBuilder.bind(requestAcceptedQueue).to(requestExchange).with("request.accepted");
+    }
+
+    // @Bean
+    // public Binding notificationBinding(Queue notificationQueue, FanoutExchange notificationExchange) {
+    //     return BindingBuilder.bind(notificationQueue).to(notificationExchange);
+    // }
 }
