@@ -32,6 +32,9 @@ public class ServiceRequestService {
     @Autowired
     private BookingProducer bookingProducer;
 
+    @Autowired
+    private com.homeservices.booking.client.UserServiceClient userServiceClient;
+
     public ServiceRequest createRequest(Long customerId, Long categoryId, Double requiredPrice, 
                                         LocalDate requiredDate, String description) throws Exception {
         ServiceRequest request = new ServiceRequest();
@@ -101,11 +104,53 @@ public class ServiceRequestService {
         request.setUpdatedDate(LocalDateTime.now());
         ServiceRequest savedRequest = serviceRequestRepository.save(request);
 
+        // Fetch and validate offer details from catalog-service
+        Double offerPrice;
+        Long offerProviderId;
+        String availableDateStr;
+        try {
+            @SuppressWarnings("unchecked")
+            java.util.Map<String, Object> offer = restTemplate.getForObject(
+                    "http://localhost:8081/api/offers/" + offerId, java.util.Map.class);
+            if (offer == null) {
+                throw new Exception("Offer not found");
+            }
+            offerPrice = ((Number) offer.get("price")).doubleValue();
+            offerProviderId = ((Number) offer.get("serviceProviderId")).longValue();
+            availableDateStr = (String) offer.get("availableDate");
+        } catch (Exception e) {
+            throw new Exception("Failed to fetch offer: " + e.getMessage());
+        }
+
+        if (!offerProviderId.equals(serviceProviderId)) {
+            throw new Exception("Service provider does not match the offer");
+        }
+
+        java.time.LocalDate offerAvailableDate = java.time.LocalDate.parse(availableDateStr);
+        if (!offerAvailableDate.equals(request.getRequiredDate())) {
+            throw new Exception("Offer available date does not match request date");
+        }
+
+        // Ensure offer price is within customer's requested maximum
+        if (offerPrice > request.getRequiredPrice()) {
+            throw new Exception("Offer price exceeds requested maximum");
+        }
+
+        // Validate and hold amount in customer's wallet
+        if (!userServiceClient.validateBalance(request.getCustomerId(), offerPrice)) {
+            bookingProducer.publishInsufficientFunds(request.getCustomerId(), offerPrice);
+            throw new Exception("Insufficient wallet balance");
+        }
+
+        if (!userServiceClient.holdAmount(request.getCustomerId(), offerPrice, offerId)) {
+            throw new Exception("Failed to hold amount in wallet");
+        }
+
         Booking booking = new Booking();
         booking.setCustomerId(request.getCustomerId());
         booking.setOfferId(offerId);
         booking.setServiceProviderId(serviceProviderId);
-        booking.setPrice(request.getRequiredPrice());
+        booking.setPrice(offerPrice);
         booking.setServiceDate(request.getRequiredDate());
         booking.setBookingDate(LocalDateTime.now());
         booking.setStatus("PENDING");

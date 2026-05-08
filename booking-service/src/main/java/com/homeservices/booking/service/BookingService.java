@@ -2,6 +2,7 @@ package com.homeservices.booking.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import com.homeservices.booking.entity.Booking;
 import com.homeservices.booking.entity.BookingHistory;
 import com.homeservices.booking.repository.BookingRepository;
@@ -26,13 +27,50 @@ public class BookingService {
     @Autowired
     private BookingProducer bookingProducer;
 
-    public Booking createBooking(Long customerId, Long offerId, Long serviceProviderId, 
-                                  Double price, java.time.LocalDate serviceDate) throws Exception {
-        if (!userServiceClient.validateBalance(customerId, price)) {
+    @Autowired
+    private RestTemplate restTemplate;
+
+    public Booking createBooking(Long customerId, Long offerId, Long serviceProviderId,
+                                  java.time.LocalDate serviceDate) throws Exception {
+        // Fetch offer from catalog-service to verify existence, provider and price
+        Double offerPrice;
+        Long offerProviderId;
+        String availableDateStr;
+        try {
+            @SuppressWarnings("unchecked")
+            java.util.Map<String, Object> offer = restTemplate.getForObject(
+                    "http://localhost:8081/api/offers/" + offerId, java.util.Map.class);
+            if (offer == null) {
+                throw new Exception("Offer not found");
+            }
+            if (offer.get("price") == null || offer.get("serviceProviderId") == null || offer.get("availableDate") == null) {
+                throw new Exception("Offer missing required fields");
+            }
+            offerPrice = ((Number) offer.get("price")).doubleValue();
+            offerProviderId = ((Number) offer.get("serviceProviderId")).longValue();
+            availableDateStr = (String) offer.get("availableDate");
+        } catch (Exception e) {
+            throw new Exception("Failed to fetch offer: " + e.getMessage());
+        }
+
+        // Validate provided serviceProviderId matches the offer's provider
+        if (!offerProviderId.equals(serviceProviderId)) {
+            throw new Exception("Service provider does not match the offer");
+        }
+
+        // Validate serviceDate matches offer's available date
+        java.time.LocalDate offerAvailableDate = java.time.LocalDate.parse(availableDateStr);
+        if (!offerAvailableDate.equals(serviceDate)) {
+            throw new Exception("Service date does not match offer's available date");
+        }
+
+        // Use the offer's price for validation/holding
+        if (!userServiceClient.validateBalance(customerId, offerPrice)) {
+            bookingProducer.publishInsufficientFunds(customerId, offerPrice);
             throw new Exception("Insufficient wallet balance");
         }
 
-        if (!userServiceClient.holdAmount(customerId, price, offerId)) {
+        if (!userServiceClient.holdAmount(customerId, offerPrice, offerId)) {
             throw new Exception("Failed to hold amount in wallet");
         }
 
@@ -40,7 +78,7 @@ public class BookingService {
         booking.setCustomerId(customerId);
         booking.setOfferId(offerId);
         booking.setServiceProviderId(serviceProviderId);
-        booking.setPrice(price);
+        booking.setPrice(offerPrice);
         booking.setServiceDate(serviceDate);
         booking.setBookingDate(LocalDateTime.now());
         booking.setStatus("PENDING");

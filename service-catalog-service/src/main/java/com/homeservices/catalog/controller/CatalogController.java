@@ -67,6 +67,13 @@ public class CatalogController {
             LocalDate availableDate = LocalDate.parse((String) request.get("availableDate"));
             String description = (String) request.get("description");
 
+            ResponseEntity<Map> userResponse = restTemplate.getForEntity(
+                    "http://localhost:8080/api/users/" + serviceProviderId, Map.class);
+            Map<String, Object> user = userResponse.getBody();
+            if (user == null || !"SERVICE_PROVIDER".equalsIgnoreCase((String) user.get("userType"))) {
+                return ResponseEntity.status(403).body(Map.of("error", "Forbidden: service provider only"));
+            }
+
             ServiceOffer offer = catalogService.createOffer(serviceProviderId, categoryId, 
                     price, availableDate, description);
             return ResponseEntity.ok(offer);

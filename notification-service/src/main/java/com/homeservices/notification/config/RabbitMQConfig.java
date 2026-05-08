@@ -20,6 +20,7 @@ public class RabbitMQConfig {
     public static final String PAYMENT_FAILED_NOTIFICATION_QUEUE = "notification.payment.failed";
     public static final String REQUEST_CREATED_NOTIFICATION_QUEUE = "notification.request.created";
     public static final String REQUEST_ACCEPTED_NOTIFICATION_QUEUE = "notification.request.accepted";
+    public static final String INSUFFICIENT_FUNDS_NOTIFICATION_QUEUE = "notification.insufficient_funds";
 
     @Bean
     public TopicExchange bookingExchange() {
@@ -59,6 +60,11 @@ public class RabbitMQConfig {
     @Bean
     public Queue requestAcceptedNotificationQueue() {
         return new Queue(REQUEST_ACCEPTED_NOTIFICATION_QUEUE, true);
+    }
+
+    @Bean
+    public Queue insufficientFundsNotificationQueue() {
+        return new Queue(INSUFFICIENT_FUNDS_NOTIFICATION_QUEUE, true);
     }
 
     @Bean
@@ -104,5 +110,12 @@ public class RabbitMQConfig {
         return BindingBuilder.bind(requestAcceptedNotificationQueue)
                 .to(requestExchange)
                 .with("request.accepted");
+    }
+
+    @Bean
+    public Binding insufficientFundsBinding(Queue insufficientFundsNotificationQueue, TopicExchange bookingExchange) {
+        return BindingBuilder.bind(insufficientFundsNotificationQueue)
+                .to(bookingExchange)
+                .with("booking.insufficient_funds");
     }
 }

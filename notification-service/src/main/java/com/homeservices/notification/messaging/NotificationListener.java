@@ -1,18 +1,23 @@
 package com.homeservices.notification.messaging;
 
 import com.homeservices.notification.config.RabbitMQConfig;
+import com.homeservices.notification.client.CatalogServiceClient;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import com.homeservices.notification.service.NotificationService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Map;
+import java.util.List;
 
 @Component
 public class NotificationListener {
 
     @Autowired
     private NotificationService notificationService;
+
+    @Autowired
+    private CatalogServiceClient catalogServiceClient;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -87,10 +92,18 @@ public class NotificationListener {
             Long categoryId = ((Number) request.get("categoryId")).longValue();
             Double requiredPrice = ((Number) request.get("requiredPrice")).doubleValue();
 
-            String msg = "New service request (ID: " + requestId + ") in category " + categoryId + " for $" + requiredPrice;
-            notificationService.createNotification(-2L, "SERVICE_PROVIDER", "REQUEST_CREATED", msg, requestId);
-
-            System.out.println("New request notification sent to all providers for request: " + requestId);
+            List<Long> providerIds = catalogServiceClient.getProvidersInCategory(categoryId);
+            
+            String msg = "New service request (ID: " + requestId + ") in your category for $" + requiredPrice;
+            
+            if (providerIds.isEmpty()) {
+                System.out.println("No providers found in category " + categoryId + " for request: " + requestId);
+            } else {
+                for (Long providerId : providerIds) {
+                    notificationService.createNotification(providerId, "SERVICE_PROVIDER", "REQUEST_CREATED", msg, requestId);
+                }
+                System.out.println("New request notifications sent to " + providerIds.size() + " providers for request: " + requestId);
+            }
         } catch (Exception e) {
             System.err.println("Error handling request.created: " + e.getMessage());
         }
@@ -109,6 +122,25 @@ public class NotificationListener {
             System.out.println("Request accepted notification sent to customer for request: " + requestId);
         } catch (Exception e) {
             System.err.println("Error handling request.accepted: " + e.getMessage());
+        }
+    }
+
+    @RabbitListener(queues = RabbitMQConfig.INSUFFICIENT_FUNDS_NOTIFICATION_QUEUE)
+    public void handleInsufficientFunds(String message) {
+        try {
+            Map<String, Object> data = objectMapper.readValue(message, Map.class);
+            Long customerId = ((Number) data.get("customerId")).longValue();
+            Double requiredAmount = ((Number) data.get("requiredAmount")).doubleValue();
+
+            String customerMsg = "Booking failed: Insufficient wallet balance. Required: $" + requiredAmount;
+            notificationService.createNotification(customerId, "CUSTOMER", "PAYMENT_FAILED", customerMsg, null);
+
+            String adminMsg = "Booking failed for customer ID " + customerId + ": Insufficient wallet balance. Required: $" + requiredAmount;
+            notificationService.createNotification(-1L, "ADMIN", "PAYMENT_FAILED", adminMsg, null);
+
+            System.out.println("Insufficient funds notifications sent for customer: " + customerId);
+        } catch (Exception e) {
+            System.err.println("Error handling booking.insufficient_funds: " + e.getMessage());
         }
     }
 }
