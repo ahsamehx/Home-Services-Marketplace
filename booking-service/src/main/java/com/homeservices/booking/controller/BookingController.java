@@ -3,6 +3,7 @@ package com.homeservices.booking.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import com.homeservices.booking.entity.Booking;
 import com.homeservices.booking.service.BookingService;
 import java.time.LocalDate;
@@ -15,6 +16,9 @@ public class BookingController {
 
     @Autowired
     private BookingService bookingService;
+
+    @Autowired
+    private RestTemplate restTemplate;
 
     @PostMapping
     public ResponseEntity<?> createBooking(@RequestBody Map<String, Object> request) {
@@ -53,8 +57,21 @@ public class BookingController {
     }
 
     @GetMapping("/history/all")
-    public ResponseEntity<?> getAllBookings() {
-        return ResponseEntity.ok(bookingService.getAllBookings());
+    public ResponseEntity<?> getAllBookings(@RequestParam(value = "adminId", required = false) Long adminId) {
+        if (adminId == null) {
+            return ResponseEntity.badRequest().body(Map.of("error", "adminId is required"));
+        }
+        try {
+            ResponseEntity<Map> userResponse = restTemplate.getForEntity(
+                    "http://localhost:8080/api/users/" + adminId, Map.class);
+            Map<String, Object> user = userResponse.getBody();
+            if (user == null || !"ADMIN".equalsIgnoreCase((String) user.get("userType"))) {
+                return ResponseEntity.status(403).body(Map.of("error", "Forbidden: admin only"));
+            }
+            return ResponseEntity.ok(bookingService.getAllBookings());
+        } catch (Exception e) {
+            return ResponseEntity.status(403).body(Map.of("error", "Admin verification failed"));
+        }
     }
 
     @GetMapping("/{id}/history")

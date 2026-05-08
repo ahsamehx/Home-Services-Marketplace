@@ -61,4 +61,20 @@ public class UserController {
     public ResponseEntity<?> getUsersByType(@PathVariable String type) {
         return ResponseEntity.ok(userRepository.findByUserType(type));
     }
+
+    @GetMapping
+    public ResponseEntity<?> getAllUsers(@RequestParam(value = "adminId", required = false) Long adminId) {
+        if (adminId == null) {
+            return ResponseEntity.badRequest().body(Map.of("error", "adminId is required"));
+        }
+        try {
+            User admin = userAuthBean.getUserById(adminId);
+            if (!"ADMIN".equalsIgnoreCase(admin.getUserType())) {
+                return ResponseEntity.status(403).body(Map.of("error", "Forbidden: admin only"));
+            }
+            return ResponseEntity.ok(userRepository.findAll());
+        } catch (Exception e) {
+            return ResponseEntity.status(403).body(Map.of("error", "Admin user not found or invalid"));
+        }
+    }
 }

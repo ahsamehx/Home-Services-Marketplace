@@ -3,6 +3,7 @@ package com.homeservices.catalog.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import com.homeservices.catalog.entity.ServiceCategory;
 import com.homeservices.catalog.entity.ServiceOffer;
 import com.homeservices.catalog.service.CatalogService;
@@ -17,16 +18,29 @@ public class CatalogController {
     @Autowired
     private CatalogService catalogService;
 
+    @Autowired
+    private RestTemplate restTemplate;
+
     @PostMapping("/categories")
-    public ResponseEntity<?> addCategory(@RequestBody Map<String, String> request) {
+    public ResponseEntity<?> addCategory(@RequestBody Map<String, Object> request) {
+        Long adminId = request.get("adminId") != null ? ((Number) request.get("adminId")).longValue() : null;
+        if (adminId == null) {
+            return ResponseEntity.badRequest().body(Map.of("error", "adminId is required in request body"));
+        }
         try {
+            ResponseEntity<Map> userResponse = restTemplate.getForEntity(
+                    "http://localhost:8080/api/users/" + adminId, Map.class);
+            Map<String, Object> user = userResponse.getBody();
+            if (user == null || !"ADMIN".equalsIgnoreCase((String) user.get("userType"))) {
+                return ResponseEntity.status(403).body(Map.of("error", "Forbidden: admin only"));
+            }
             ServiceCategory category = catalogService.addCategory(
-                    request.get("categoryName"),
-                    request.get("description")
+                    (String) request.get("categoryName"),
+                    (String) request.get("description")
             );
             return ResponseEntity.ok(category);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+            return ResponseEntity.status(403).body(Map.of("error", "Admin verification failed: " + e.getMessage()));
         }
     }
 
